@@ -2,23 +2,19 @@
 
 This repo contains the following slides from the meetups
 
-## 2012
+### 2014
 
-### September 
-
-#### 11th
-
-* [Simon Oram's][0] talk on ZODB
-* [Dave Jeffrey's][1] talk on Virtualenv & Virtualenvwrapper
+* Paweł Widera's tutorial on pygame (February)
+* Praveen Kumar's talk on gevent (January)
 
 ## 2013
 
-### May
+* [Dave Jeffrey's / The App Chap's][2] talk on The Coldest Journey Django project (May)
 
-#### 16th
+## 2012
 
-* [Dave Jeffrey's / The App Chap's][2] talk on The Coldest Journey Django project
-
+* [Simon Oram's][0] talk on ZODB (September)
+* [Dave Jeffrey's][1] talk on Virtualenv & Virtualenvwrapper (September)
 
 
 [0]: http://www.electrosoup.co.uk/
