@@ -4,6 +4,7 @@ This repo contains the following slides from the meetups
 
 ### 2014
 
+* Rowan Hargreaves' tutorial on robot game (March)
 * Paweł Widera's tutorial on pygame (February)
 * Praveen Kumar's talk on gevent (January)
 
