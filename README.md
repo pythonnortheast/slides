@@ -4,6 +4,7 @@ This repo contains the following slides from the meetups
 
 ### 2014
 
+* Marc Kirkwood's talk on Django and Javascript (May)
 * Alex Kavanagh's talk on test driven development (April)
 * Rowan Hargreaves' tutorial on robot game (March)
 * Paweł Widera's tutorial on pygame (February)
