@@ -2,11 +2,15 @@
 
 This repo contains the following slides from the meetups
 
+### 2015
+
+* Paweł Widera's talk on drawing with code and generative art (January)
+
 ### 2014
 
 * Marc Kirkwood's talk on Django and Javascript (May)
-* Alex Kavanagh's talk on test driven development (April)
-* Rowan Hargreaves' tutorial on robot game (March)
+* Alex Kavanagh's talk on Test Driven Development (April)
+* Rowan Hargreaves' tutorial on Robot Game (March)
 * Paweł Widera's tutorial on pygame (February)
 * Praveen Kumar's talk on gevent (January)
 
@@ -23,4 +27,3 @@ This repo contains the following slides from the meetups
 [0]: http://www.electrosoup.co.uk/
 [1]: http://www.davidjeffrey.co.uk
 [2]: http://www.theappchaps.co.uk
-
