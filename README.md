@@ -4,7 +4,8 @@ This repo contains the following slides from the meetups
 
 ### 2015
 
-* Paweł Widera's talk on drawing with code and generative art (January)
+* [Paweł Widera's tutorial][evoalg] on evolutionary algorithms (October)
+* [Paweł Widera's talk][genart] on drawing with code and generative art (January)
 
 ### 2014
 
@@ -27,3 +28,5 @@ This repo contains the following slides from the meetups
 [0]: http://www.electrosoup.co.uk/
 [1]: http://www.davidjeffrey.co.uk
 [2]: http://www.theappchaps.co.uk
+[genart]: http://tinyurl.com/pyne-genart
+[evoalg]: http://tinyurl.com/pyne-evoalg
