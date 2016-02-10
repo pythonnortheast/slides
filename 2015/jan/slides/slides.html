@@ -1,0 +1,1693 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+	<meta name="author" content="Paweł Widera" />
+	<meta name="dcterms.date" content="2015-01-14" />
+	<title>Drawing with code from interactive graphics to generative art</title>
+
+<!-- style -->
+<style>
+@font-face {
+	font-family: "Oswald";
+	font-style: normal;
+	font-weight: 400;
+	src: local("Oswald Regular"), local("Oswald-Regular"), url("resources/oswald.woff") format("woff");
+}
+
+@font-face {
+	font-family: "Inconsolata";
+	font-weight: 500;
+	src: local("Inconsolata"), url("resources/inconsolata.otf") format("opentype");
+}
+
+html, .view body {
+	color: white;
+	background-color: black;
+	counter-reset: slideidx;
+}
+body, .view section {
+	background: #1C1C1C;
+	font-size: 26px;
+	font-family: 'Oswald', serif;
+}
+.view section:after {
+	counter-increment: slideidx;
+	content: counter(slideidx, decimal-leading-zero);
+	position: absolute;
+	bottom: -80px;
+	right: 100px;
+    color: white;
+}
+.view head > title {
+	margin: 1em 0 1em 0;
+	color: white;
+	background: #1C1C1C;
+	text-align: center;
+}
+
+section {
+	/*-moz-transition: left 500ms linear, opacity 600ms ease;
+	-webkit-transition: left 500ms linear, opacity 600ms ease;
+	-ms-transition: left 500ms linear, opacity 600ms ease;*/
+	transition: left 500ms linear, opacity 600ms ease;
+}
+.view section {
+	transition: none;
+}
+.view section[aria-selected] {
+	border: 5px red solid;
+}
+
+section { left: -120%; opacity: 0}
+section[aria-selected] { left: 0; opacity: 1}
+section[aria-selected] ~ section { left: +120%; opacity: 0}
+
+.incremental > * { opacity: 1; }
+.incremental > *[aria-selected] { opacity: 1; }
+.incremental > *[aria-selected] ~ * { opacity: 0; }
+
+#progress-bar {
+	height: 2px;
+	background: #999;
+}
+
+a {
+	color: #999;
+	text-decoration: none;
+	font-size: 75%;
+}
+a:hover {
+	text-decoration: underline;
+}
+strong {
+	color: #FF0066
+}
+
+.level1 h1 {
+	line-height: 600px;
+	vertical-align: middle;
+	margin: 0;
+	text-align: center;
+	display: block
+}
+.level2 h1 {
+	color: #FAE50B;
+	margin: 20px 0;
+	font-size: 40px;
+	text-align: center;
+}
+
+h1 {
+	margin: 50px 100px 0 100px;
+	font-size: 50px;
+	text-shadow: -1px -1px 0 #000;
+	text-align: left;
+}
+h1 span {
+	display: block;
+	margin-top: 1em;
+	font-size: 30px;
+}
+h2 {
+	color: #FAE50B;
+	margin: 150px 0 0 0;
+	font-size: 30px;
+	text-align: center;
+}
+h3 {
+	color: #FF0066;
+}
+
+footer {
+	position: absolute;
+	bottom: 50px;
+	width: 100%;
+}
+footer div {
+	float: right;
+	margin-right: 50px;
+	color: #FF0066;
+	font-size: 20px;
+}
+footer a {
+	float: left;
+	margin-left: 50px;
+}
+
+ul {
+	float: left;
+	display: inline-block;
+	min-width: 310px;
+	margin-top: 70px;
+	margin-left: 50px;
+	padding-right: 40px;
+	border-right: 4px solid white;
+	font-size: 30px;
+	text-align: right;
+}
+li {
+	list-style-type: none
+}
+
+.side {
+	float: left;
+	min-width: 150px;
+	margin-top: 70px;
+	margin-left: 25px;
+	text-align: center;
+}
+
+q, p {
+	margin: 20px auto 35px auto;
+	width: 700px;
+	clear: both;
+}
+q:after {
+	content: "";
+}
+q:before {
+	content: "";
+}
+q {
+	display: block;
+	margin-top: 140px;
+}
+
+video {
+	margin: 0 3em;
+}
+
+figure {
+	text-align: center;
+}
+figure img {
+	margin: 0 auto;
+}
+
+pre > code {
+	margin: 0 20px;
+}
+pre {
+	font-size: 13px;
+	font-family: "Inconsolata", serif;
+}
+.code {
+	position: absolute;
+	top: 90px;
+	right: 25px;
+	text-align: right;
+}
+.code a {
+	color: #0BE5FA;
+	background-color: transparent;
+}
+</style>
+
+
+	<link rel="stylesheet" href="resources/monokai_sublime.css">
+	<script src="resources/highlight.pack.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+<section>
+	<h1 class="title" xmlns:dct="http://purl.org/dc/terms/"
+		property="dct:title">Drawing with code <span>from interactive graphics to generative art</span></h1>
+	<h2 class="author" xmlns:cc="http://creativecommons.org/ns#"
+		property="cc:attributionName">Paweł Widera</h2>
+	<footer>
+		<div>2015-01-14</div>
+		<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+			<img width="120" alt="Creative Commons Attribution-ShareAlike Licence"
+				src="resources/cc-by-sa.svg" /></a>
+	</footer>
+</section>
+<section id="introduction" class="titleslide slide level1"><h1>Introduction</h1></section><section id="what-is-this-about" class="slide level2">
+<h1>What is this about?</h1>
+<ul>
+<li>making <strong>pretty graphics</strong> with code</li>
+<li><strong>interacting</strong> with the drawings</li>
+<li><br></li>
+<li>generating cool art with<br> <strong>composition</strong> and <strong>procedural animation</strong></li>
+</ul>
+</section><section id="tutorial-organisation" class="slide level2">
+<h1>Tutorial organisation</h1>
+<p>No need to type, just <strong>download code</strong> and play with it :)<br> Links are on the <strong>slides</strong>, follow them here:</p>
+<h1>
+<a href="http://tinyurl.com/pyne-genart">http://tinyurl.com/pyne-genart</a>
+</h1>
+
+<p>Please don't afraid to <strong>ask questions</strong>!</p>
+<p>The <strong>dojo</strong> part will be about generating your own <strong>piece of art</strong>.</p>
+</section><section id="processing-and-friends" class="slide level2">
+<h1>Processing and friends</h1>
+<p><a href="http://www.processing.org/">processing</a><br> Java application that is an environment for creating visuals.<br> Straightforward language with easy API.</p>
+<p><a href="http://processingjs.org/">processing.js</a><br> Processing interpreter written in Javascript rendering to canvas.</p>
+<p><a href="http://code.google.com/p/pyprocessing/">pyprocessing</a><br> Port of processing API - not the language.<br> Built on OpenGL gaming library <a href="http://pyglet.org/">pyglet</a>.</p>
+<pre><code>sudo pip install https://pyprocessing.googlecode.com/files/pyprocessing-0.1.3.22.tar.gz</code></pre>
+</section><section id="screen-coordinates" class="slide level2">
+<h1>Screen coordinates</h1>
+<figure>
+<img width="400" src="resources/screen.svg">
+</figure>
+
+</section><section id="colours---rgb-model" class="slide level2">
+<h1>Colours - RGB model</h1>
+<ul>
+<li>hardware-oriented</li>
+<li>based on colour mixing</li>
+<li>not intuitive</li>
+<li><br></li>
+<li><strong>color(255, 168, 0)</strong></li>
+</ul>
+<div class="side">
+<img width="300px" src="resources/rgb.svg" />
+</div>
+</section><section id="colours---hsb-model" class="slide level2">
+<h1>Colours - HSB model</h1>
+<ul>
+<li>hue</li>
+<li>saturation</li>
+<li>brightness</li>
+<li><br></li>
+<li><strong>color(30, 100, 100)</strong></li>
+</ul>
+<div class="side">
+<img width="300px" src="resources/hsb.svg" />
+</div>
+</section>
+<section id="first-steps" class="titleslide slide level1"><h1>First steps</h1></section><section id="shapes" class="slide level2">
+<h1>Shapes</h1>
+<div class="code">
+<a href="../code/shapes.py">code</a>
+</div>
+<pre class="python"><code>import pyprocessing as p
+
+p.size(400, 500)  # screen width and height
+
+# body
+p.triangle(100, 410, 200, 200, 300, 410)  # 3 points (x,y)
+
+# hands
+p.ellipse(100, 300, 40, 40)  # centre point (x,y)
+p.ellipse(300, 300, 40, 40)  # and size (width,height)
+
+# face
+p.ellipse(200, 180, 190, 200)
+
+# mouth
+p.line(183, 246, 245, 230)  # 2 points (x,y)
+
+# frames
+p.line(107, 163, 295, 163)
+
+# lenses
+p.rect(132, 150, 50, 40)  # top left corner (x,y)
+p.rect(215, 150, 50, 40)  # and size (width,height)
+
+p.run()</code></pre>
+</section><section id="fill-and-stroke" class="slide level2">
+<h1>Fill and stroke</h1>
+<div class="code">
+<a href="../code/colours.py">code</a>
+</div>
+<pre class="python"><code>import pyprocessing as p
+
+p.size(400, 500)
+p.colorMode(p.HSB, 360, 100, 100, 100)
+p.background(0, 0, 0)  # HSB
+
+p.fill(120, 50, 50)  # HSB
+p.triangle(100, 410, 200, 200, 300, 410)
+
+p.fill(40, 50, 100)  # HSB
+p.ellipse(100, 300, 40, 40)
+p.ellipse(300, 300, 40, 40)
+
+p.ellipse(200, 180, 190, 200)
+
+p.stroke(10, 100, 75)  # HSB
+p.strokeWeight(10)
+p.line(183, 246, 245, 230)
+
+p.stroke(100, 50, 100)  # HSB
+p.line(107, 163, 295, 163)
+
+p.fill(230, 50, 100, 50)  # HSB + alpha
+p.rect(132, 150, 50, 40)
+p.rect(215, 150, 50, 40)
+
+p.run()</code></pre>
+</section><section id="events" class="slide level2">
+<h1>Events</h1>
+<div class="code">
+<a href="../code/events.py">code</a>
+</div>
+<pre class="python"><code>import pyprocessing as p
+
+p.size(400, 400)
+
+def mouseDragged():
+  # draw a line between previous and current mouse position
+  p.line(p.pmouse.x, p.pmouse.y, p.mouse.x, p.mouse.y)
+
+def keyPressed():
+  # clear the screen
+  if p.key.char in &#39;cC&#39;:
+    p.background(200)
+
+p.run()</code></pre>
+<p><a href="https://code.google.com/p/pyprocessing/wiki/QuickReference">pyprocessing quick reference</a></p>
+</section><section id="interaction" class="slide level2">
+<h1>Interaction</h1>
+<div class="code">
+<a href="../code/mouse.py">code</a>
+</div>
+<pre class="python"><code>import pyprocessing as p
+
+def setup():
+  p.size(400, 400)
+  p.rectMode(p.CENTER)
+  p.noStroke()
+
+def draw():
+  p.background(50)  # grey scale
+  p.fill(255, 150)  # grey scale + alpha
+
+  size = p.mouse.y / 2
+  p.rect(p.mouse.x, 200, size + 10, size + 10)
+  p.rect(400 - p.mouse.x, 200, 210 - size, 210 - size)
+
+p.run()</code></pre>
+</section>
+<section id="geometry" class="titleslide slide level1"><h1>Geometry</h1></section><section id="pixel-by-pixel" class="slide level2">
+<h1>Pixel by pixel</h1>
+<div class="code">
+<a href="../code/pattern.py">code</a>
+</div>
+<pre class="python"><code>import pyprocessing as p
+
+p.size(255, 255)
+
+for x in range(256):
+  for y in range(256):
+    colour = x ^ y
+    p.stroke(colour)
+    p.point(x, y)
+
+p.run()
+
+
+&quot;&quot;&quot;
+^ is bitwise exclusive or (xor)
+
+0 ^ 0 = 1 ^ 1 = 0
+1 ^ 0 = 0 ^ 1 = 1
+
+Example: 100101 ^ 101001 = 001100
+
+&quot;&quot;&quot;</code></pre>
+</section><section id="transformations" class="slide level2">
+<h1>Transformations</h1>
+<div class="code">
+<a href="../code/star.py">code</a>
+</div>
+<pre class="python"><code>import math
+import pyprocessing as p
+
+p.size(400, 400)
+p.colorMode(p.HSB, 360, 100, 100, 100)
+p.noStroke()
+
+p.background(0)
+p.fill(0, 100, 100, 40)
+
+# shift the (0, 0) point
+p.translate(200, 200)
+
+for i in range(10):
+  # rotate around (0, 0) by 1/10th of a full angle
+  p.rotate(2 * math.pi / 10)
+  p.triangle(0, -200, 100, 100, -100, 100)
+
+p.run()</code></pre>
+</section><section id="rings---setup" class="slide level2">
+<h1>Rings - setup</h1>
+<div class="code">
+<a href="../code/rings-1.py">code</a>
+</div>
+<pre class="python"><code>import math
+import random
+import pyprocessing as p
+
+COLOURS = [(45,25,100), (345,50,65), (10,60,90), (30,50,100)]
+
+p.size (600, 200)
+p.colorMode(p.HSB, 360, 100, 100)
+p.noStroke()
+p.background(292, 40, 30)
+
+x = random.randint(200, 400)
+y = random.randint(5, 150)
+n = random.randint(3, 30)
+radius = random.randint(10, 100)
+size = random.randint(3, 15)
+colour = random.choice(COLOURS)
+
+p.fill(*colour)
+for i in range(n):
+  angle = i * 2*math.pi / n
+  new_x = x + math.cos(angle) * radius
+  new_y = y + math.sin(angle) * radius
+  p.ellipse(new_x, new_y, size, size)
+
+p.run()</code></pre>
+</section><section id="rings---loop" class="slide level2">
+<h1>Rings - loop</h1>
+<div class="code">
+<a href="../code/rings-2.py">code</a>
+</div>
+<pre class="python"><code>def rings():
+  p.background(292, 40, 30)
+
+  for i in range(30):
+    x = random.randint(0, 600)
+    y = random.randint(0, 200)
+    ...
+
+def keyPressed():
+  rings()
+
+rings()
+p.run()</code></pre>
+</section><section id="recursion" class="slide level2">
+<h1>Recursion</h1>
+<div class="code">
+<a href="../code/recursion.py">code</a>
+</div>
+<pre class="python"><code>import pyprocessing as p
+
+p.size(400, 400)
+p.noStroke()
+
+def circle(x, radius, level):
+  p.fill(126 * level / 4)
+  p.ellipse(x, 200, radius * 2, radius * 2)
+
+  if level &gt; 1:
+    circle(x - 0.5 * radius, 0.5 * radius, level - 1)
+    circle(x + 0.5 * radius, 0.5 * radius, level - 1)
+
+circle(200, 200, 6)
+
+p.run()</code></pre>
+</section><section id="tree---setup" class="slide level2">
+<h1>Tree - setup</h1>
+<div class="code">
+<a href="../code/tree-1.py">code</a>
+</div>
+<pre class="python"><code>import pyprocessing as p
+
+def setup():
+  p.size(400, 400)
+
+def draw():
+  # draw tree trunk and move to its top
+  p.translate(200, 400)
+  p.line(0, 0, 0, -120)
+  p.translate(0, -120)
+
+  # draw the branches
+  branches(120)
+
+def branches(height):
+  height *= 0.66
+
+  # draw left and right branch
+  for angle in [-0.5, 0.5]:
+    p.pushMatrix()
+    p.rotate(angle)
+    p.line(0, 0, 0, -height)
+    p.translate(0, -height)
+    p.popMatrix()
+
+p.run()</code></pre>
+</section><section id="tree---recursion" class="slide level2">
+<h1>Tree - recursion</h1>
+<div class="code">
+<a href="../code/tree-2.py">code</a>
+</div>
+<pre class="python"><code>def branches(height):
+  height *= 0.66
+
+  # finish branching when height is small
+  if height &lt; 3:
+    return
+
+  # draw left and right branch
+  for angle in [-0.5, 0.5]:
+    p.pushMatrix()
+    p.rotate(angle)
+    p.line(0, 0, 0, -height)
+    p.translate(0, -height)
+    branches(height)  # &lt;-- RECURSION
+    p.popMatrix()</code></pre>
+</section><section id="tree---interaction" class="slide level2">
+<h1>Tree - interaction</h1>
+<div class="code">
+<a href="../code/tree-3.py">code</a>
+</div>
+<pre class="python"><code>def draw():
+  ...
+  angle = math.pi * p.mouse.x / 800
+
+  # draw the branches
+  branches(120, angle)
+
+
+def branches(height, angle):
+  ...
+  # draw left and right branch
+  for angle in [-angle, angle]:
+    ...
+    branches(height, angle)
+    ...</code></pre>
+</section>
+<section id="composition" class="titleslide slide level1"><h1>Composition</h1></section><section id="square-limit-by-m.c.-escher" class="slide level2">
+<h1><strong>Square Limit</strong> by M.C. Escher</h1>
+<figure>
+<img src="resources/fish.svg" />
+</figure>
+<h1>
+<a href="../code/fish.png">download image</a>
+</h1>
+
+<p><a href="http://pmh-systems.co.uk/phAcademic/papers/funcgeo2.pdf">&quot;Functional geometry&quot; by Peter Henderson</a></p>
+</section><section id="functions" class="slide level2">
+<h1>Functions</h1>
+<figure>
+<img width="700" src="resources/functions.svg">
+</figure>
+
+</section><section id="functions---rotation" class="slide level2">
+<h1>Functions - <strong>rotation</strong></h1>
+<div class="code">
+<a href="../code/square_limit-1.py">code</a>
+</div>
+<pre class="python"><code>import math
+import pyprocessing as p
+
+p.size(800, 800)
+p.background(255)
+p.translate(300, 300)
+img = p.loadImage(&quot;fish.png&quot;)
+
+def fish():
+  p.image(img, -80, -80)
+
+def rotate(f):
+  def wrapped_f():
+    p.pushMatrix()
+    p.translate(0, 240)
+    p.rotate(-math.pi / 2)
+    f()
+    p.popMatrix()
+
+  return wrapped_f
+
+fish()
+
+composition = rotate(rotate(fish))
+composition()
+
+p.run()</code></pre>
+</section><section id="functions---flip" class="slide level2">
+<h1>Functions - <strong>flip</strong></h1>
+<div class="code">
+<a href="../code/square_limit-2.py">code</a>
+</div>
+<pre class="python"><code>def flip(f):
+  def wrapped_f():
+    p.pushMatrix()
+    p.translate(240, 0)
+    p.scale(-1, 1)
+    f()
+    p.popMatrix()
+  return wrapped_f
+
+fish()
+
+composition = flip(fish)
+composition()</code></pre>
+</section><section id="functions---refactoring" class="slide level2">
+<h1>Functions - refactoring</h1>
+<div class="code">
+<a href="../code/square_limit-3.py">code</a>
+</div>
+<pre class="python"><code>def transform(t, *args):
+  def wrapper(*args):
+    def wrapped_f():
+      p.pushMatrix()
+      t(*args)  # perform transformation t
+      args[-1]()  # call function f
+      p.popMatrix()
+    return wrapped_f
+  return wrapper
+
+@transform
+def rotate(f):
+  p.translate(0, 240)
+  p.rotate(-math.pi / 2)
+
+@transform
+def flip(f):
+  p.translate(240, 0)
+  p.scale(-1, 1)</code></pre>
+</section><section id="functions---rot45" class="slide level2">
+<h1>Functions - <strong>rot45</strong></h1>
+<div class="code">
+<a href="../code/square_limit-4.py">code</a>
+</div>
+<pre class="python"><code>@transform
+def rot45(f):
+  p.rotate(-math.pi / 4)
+  p.scale(1 / math.sqrt(2))
+
+fish()
+
+composition = flip(rot45(fish))
+composition()</code></pre>
+</section><section id="building-tiles---overlay" class="slide level2">
+<h1>Building tiles - <strong>overlay</strong></h1>
+<div class="code">
+<a href="../code/square_limit-5.py">code</a>
+</div>
+<pre class="python"><code>def overlay(*args):
+  def wrapped_f():
+    for f in args:
+      f()
+  return wrapped_f
+
+fish2 = flip(rot45(fish))
+fish3 = rotate(rotate(rotate(fish2)))
+
+t = overlay(fish, fish2, fish3)
+u = overlay(fish2, rotate(fish2), rotate(rotate(fish2)), rotate(rotate(rotate(fish2))))
+
+t()</code></pre>
+</section><section id="functions---above-and-beside" class="slide level2">
+<h1>Functions - <strong>above</strong> and <strong>beside</strong></h1>
+<div class="code">
+<a href="../code/square_limit-6.py">code</a>
+</div>
+<pre class="python"><code>@transform
+def above(f, g):
+  p.scale(1, 0.5)
+  f()
+  p.translate(0, 240)
+
+@transform
+def beside(f, g):
+  p.scale(0.5, 1)
+  f()
+  p.translate(240, 0)
+
+...
+
+def grid2x2(a, b, c, d):
+  return above(beside(a, b), beside(c, d))
+
+composition = grid2x2(u, u, u, u)
+composition()</code></pre>
+</section><section id="building-tiles---side" class="slide level2">
+<h1>Building tiles - <strong>side</strong></h1>
+<div class="code">
+<a href="../code/square_limit-7.py">code</a>
+</div>
+<pre class="python"><code>def blank():
+  pass
+
+def side(n):
+  if n &lt; 2:
+    return grid2x2(blank, blank, rotate(t), t)
+  return grid2x2(side(n - 1), side(n - 1), rotate(t), t)
+
+composition = side(2)
+composition()</code></pre>
+</section><section id="building-tiles---corner" class="slide level2">
+<h1>Building tiles - <strong>corner</strong></h1>
+<div class="code">
+<a href="../code/square_limit-8.py">code</a>
+</div>
+<pre class="python"><code>def corner(n):
+  if n &lt; 2:
+    return grid2x2(blank, blank, blank, u)
+  return grid2x2(corner(n - 1), side(n -1), rotate(side(n - 1)), u)
+
+composition = corner(2)
+composition()</code></pre>
+</section><section id="all-together-now" class="slide level2">
+<h1>All together now</h1>
+<div class="code">
+<a href="../code/square_limit-9.py">code</a>
+</div>
+<pre class="python"><code>@transform
+def above(*args):
+  scale = 1.0 / len(args)
+  p.scale(1, scale)
+  for f in args[:-1]:
+    f()
+    p.translate(0, 240)
+
+@transform
+def beside(*args):
+  scale = 1.0 / len(args)
+  p.scale(scale, 1)
+  for f in args[:-1]:
+    f()
+    p.translate(240, 0)
+...
+
+def grid3x3(a, b, c, d, e, f, g, h, i):
+  return above(beside(a, b, c), beside(d, e, f), beside(g, h, i))
+
+def square(n):
+  return grid3x3(
+    corner(n), side(n), rotate(rotate(rotate(corner(n)))),
+    rotate(side(n)), u, rotate(rotate(rotate(side(n)))),
+    rotate(corner(n)), rotate(rotate(side(n))), rotate(rotate(corner(n)))
+  )
+
+composition = square(3)
+composition()</code></pre>
+</section>
+<section id="animation" class="titleslide slide level1"><h1>Animation</h1></section><section id="simple-movement---setup" class="slide level2">
+<h1>Simple movement - setup</h1>
+<div class="code">
+<a href="../code/wave-1.py">code</a>
+</div>
+<pre class="python"><code>import math
+import pyprocessing as p
+
+
+def setup():
+  p.size(400, 400)
+  p.colorMode(p.HSB, 360, 100, 100)
+  p.fill(30, 100, 100)
+  p.noStroke()
+  p.noLoop()
+
+def draw():
+  p.background(0)
+
+  for i in range(20):
+    angle = i * 0.2
+    x = i * 20
+    y = (math.sin(angle) + 1) * 200
+    p.ellipse(x, y, 16, 16)
+
+p.run()</code></pre>
+</section><section id="simple-movement---animation" class="slide level2">
+<h1>Simple movement - animation</h1>
+<div class="code">
+<a href="../code/wave-2.py">code</a>
+</div>
+<pre class="python"><code>SPEED = 0.02
+
+...
+
+def setup():
+  #p.noLoop()  # &lt;-- LOOPING ENABLED
+
+...
+
+def draw():
+  ...
+  angle = i * 0.2 + p.frame.count * SPEED
+  ...</code></pre>
+</section><section id="rings---object-to-animate" class="slide level2">
+<h1>Rings - object to animate</h1>
+<pre class="python"><code>class Ring:
+  def __init__(self, x, y):
+    self.x = x
+    self.y = y
+    self.n = random.randint(3, 30)
+    self.radius = random.randint(10, 100)
+    self.size = random.randint(3, 15)
+    self.colour = random.choice(COLOURS)
+
+    self.angle = random.random() * 2*math.pi
+    self.speed = p.map(self.radius, 10, 100, 0.03, 0.01)
+
+    # randomise direction of rotation
+    if random.random() &gt; 0.5:
+      self.speed *= -1
+
+  def draw(self):
+    p.fill(*self.colour)
+    for i in range(self.n):
+      angle = i * 2*math.pi / self.n + self.angle
+      new_x = self.x + math.cos(angle) * self.radius
+      new_y = self.y + math.sin(angle) * self.radius
+      p.ellipse(new_x, new_y, self.size, self.size)
+
+    self.angle += self.speed</code></pre>
+</section><section id="rings---animation" class="slide level2">
+<h1>Rings - animation</h1>
+<div class="code">
+<a href="../code/rings_animated.py">code</a>
+</div>
+<pre class="python"><code>import math
+import random
+import pyprocessing as p
+
+rings = []
+
+def setup():
+  p.size (600, 200)
+  p.colorMode(p.HSB, 360, 100, 100)
+  p.noStroke()
+  add(random.randint(0, 600), random.randint(0, 200))
+
+def draw():
+  p.background(292, 40, 30)
+  for ring in rings:
+    ring.draw()
+
+def add(x, y):
+  for i in range(10):
+    ring = Ring(x, y)
+    rings.append(ring)
+
+def mousePressed():
+  if p.mouse.button == p.LEFT:
+    add(p.mouse.x, p.mouse.y)
+  else:
+    for i in range(10):
+      rings.pop()
+
+p.run()</code></pre>
+</section><section id="animation-without-movement" class="slide level2">
+<h1>Animation without movement</h1>
+<div class="code">
+<a href="../code/dark_light.py">code</a>
+</div>
+<pre class="python"><code>import pyprocessing as p
+
+MAX_DISTANCE = p.dist(0, 0, 640, 360)
+
+def setup():
+  p.size(640, 360)
+  p.noStroke()
+
+def draw():
+  p.background(0)
+
+  for i in range(width / 20 + 1):
+    for j in range(height / 20 + 1):
+      size = p.dist(p.mouse.x, p.mouse.y, i * 20, j * 20)
+      size = size / MAX_DISTANCE * 66
+      p.ellipse(i * 20, j * 20, size, size)
+
+p.run()</code></pre>
+</section><section id="relative-movement" class="slide level2">
+<h1>Relative movement</h1>
+<div class="code">
+<a href="../code/follow.py">code</a>
+</div>
+<pre class="python"><code>import math
+import pyprocessing as p
+
+x = [0] * SIZE
+y = [0] * SIZE
+
+def setup():
+  p.size(400, 400)
+  p.strokeWeight(10)
+  p.stroke(255, 200)
+
+def draw():
+  p.background(0)
+  drag_segment(0, p.mouse.x, p.mouse.y)
+  for i in range(SIZE - 1):
+    drag_segment(i + 1, x[i], y[i])
+
+def drag_segment(i, xin, yin):
+  # find the inclination of a segment with respect to X axis
+  angle = math.atan2(yin - y[i], xin - x[i])
+  x[i] = xin - math.cos(angle) * LENGTH
+  y[i] = yin - math.sin(angle) * LENGTH
+
+  p.pushMatrix()
+  p.translate(x[i], y[i])
+  p.rotate(angle)
+  p.line(0, 0, LENGTH, 0)
+  p.popMatrix()
+
+p.run()</code></pre>
+</section>
+<section id="emergent-art" class="titleslide slide level1"><h1>Emergent Art</h1></section><section id="process-compendium-by-casey-reas" class="slide level2">
+<h1><strong>Process Compendium</strong> by Casey Reas</h1>
+<pre class="python"><code># FORMS
+F1 = &quot;circle&quot;
+F2 = &quot;line&quot;
+
+# BEHAVIOURS
+B1 = &quot;move in a straight line&quot;
+B2 = &quot;constrain to surface&quot;
+B3 = &quot;change direction while touching another element&quot;
+B4 = &quot;move away from an overlapping element&quot;
+B5 = &quot;enter from the opposite edge after moving off the surface&quot;
+B6 = &quot;orient toward the direction of an element that is touching&quot;
+B7 = &quot;deviate from the current direction&quot;
+
+# ELEMENTS
+E1 = F1 + B1 + B2 + B3 + B4
+E2 = F1 + B1 + B5
+E3 = F2 + B1 + B3 + B5
+E4 = F1 + B1 + B2 + B3
+E5 = F2 + B1 + B5 + B6 + B7</code></pre>
+<p><strong>Element</strong> is a little machine with <strong>form</strong> and a set of <strong>behaviours</strong>. How releations between elements are visualised is defined by a <strong>process</strong>.</p>
+</section><section id="process-4" class="slide level2">
+<h1>Process 4</h1>
+<p><strong>( 1 )</strong> Fill a rectangular surface with varying sizes of <strong>Element 1</strong>.</p>
+<p><strong>( 2 )</strong> Draw a line from the <strong>centres</strong> of elements that are <strong>touching</strong>.</p>
+<p><strong>( 3 )</strong> Set the <strong>colour</strong> of the shortest possible line to <strong>black</strong> and the longest to <strong>white</strong>, with varying <strong>greys</strong> representing values in between.</p>
+</section><section id="process-4---setup" class="slide level2">
+<h1>Process 4 - setup</h1>
+<div class="code">
+<a href="../code/process4-1.py">code</a>
+</div>
+<pre class="python"><code>import math
+import random
+import pyprocessing as p
+
+SIZE = 400 # screen size
+SCALE = 3  # number of elements
+
+class Element:
+  def __init__(self):
+    self.x = random.randrange(int(0.25 * SIZE), int(0.75 * SIZE))
+    self.y = random.randrange(int(0.25 * SIZE), int(0.75 * SIZE))
+    self.radius = random.randrange(5, int(0.2 * SIZE))
+
+elements = [Element() for i in range(SCALE)]
+
+def setup():
+  p.size(SIZE, SIZE)
+  p.noFill()
+  p.stroke(255)
+
+def draw():
+  p.background(0)
+  for e in elements:
+    p.ellipse(e.x, e.y, e.radius, e.radius)
+
+p.run()</code></pre>
+</section><section id="process-4---behaviour-1" class="slide level2">
+<h1>Process 4 - <strong>Behaviour 1</strong></h1>
+<div class="code">
+<a href="../code/process4-2.py">code</a>
+</div>
+<pre class="python"><code>class Element:
+  def __init__(self):
+    ...
+    # random angle in radians
+    self.angle = random.random() * 2 * math.pi
+    # rotate a unit vector by angle
+    self.velocity = [math.cos(self.angle), math.sin(self.angle)]
+
+  def move(self):
+    self.x += self.velocity[0]
+    self.y += self.velocity[1]
+
+...
+
+def draw():
+  ...
+  for e in elements:
+    p.ellipse(e.x, e.y, e.radius, e.radius)
+    e.move()</code></pre>
+</section><section id="process-4---behaviour-2" class="slide level2">
+<h1>Process 4 - <strong>Behaviour 2</strong></h1>
+<div class="code">
+<a href="../code/process4-3.py">code</a>
+</div>
+<pre class="python"><code>class Element:
+  def __init__(self):
+    ...
+    # screen constraints
+    self.min = self.size / 2
+    self.max = SIZE - self.size / 2 - 1
+
+  def move(self):
+    self.x += self.velocity[0]
+    self.y += self.velocity[1]
+
+    if not self.min &lt; self.x &lt; self.max:
+      self.x -= self.velocity[0]
+    if not self.min &lt; self.y &lt; self.max:
+      self.y -= self.velocity[1]</code></pre>
+</section><section id="process-4---behaviour-3" class="slide level2">
+<h1>Process 4 - <strong>Behaviour 3</strong></h1>
+<div class="code">
+<a href="../code/process4-4.py">code</a>
+</div>
+<pre class="python"><code>class Element:
+  ...
+  def rotate(self):
+    self.angle += ROTATION
+    self.velocity = [math.cos(self.angle), math.sin(self.angle)]
+...
+
+def draw():
+  p.background(0)
+  for e in elements:
+    p.ellipse(e.x, e.y, e.size, e.size)
+    p.line(e.x, e.y, e.x + e.velocity[0] * e.size / 2,
+      e.y + e.velocity[1] * e.size / 2)
+
+  # find all elements touching another element
+  touching = {}
+  for a, b in itertools.combinations(elements, 2):
+    distance = math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2)
+    if distance &lt; 0.5 * (a.size + b.size):
+      touching[a] = True
+      touching[b] = True
+
+  # rotate and move all elements
+  for e in elements:
+    if e in touching:
+      e.rotate()
+    e.move()</code></pre>
+</section><section id="process-4---behaviour-4" class="slide level2">
+<h1>Process 4 - <strong>Behaviour 4</strong></h1>
+<div class="code">
+<a href="../code/process4-5.py">code</a>
+</div>
+<pre class="python"><code>class Element:
+  def __init__():
+    self.touching = []
+  ...
+  def move_away(self):
+    net_velocity = self.velocity[:]
+    for element in self.touching:
+      size = 3 * (self.size + element.size)
+      net_velocity[0] += (self.x - element.x) / size
+      net_velocity[1] += (self.y - element.y) / size
+
+    self.touching = []
+    self.update(net_velocity)
+...
+def draw():
+  ...
+    if distance &lt; 0.5 * (a.size + b.size):
+      a.touching.append(b)
+      b.touching.append(a)
+
+  # move all elements
+  for e in elements:
+    if e.touching:
+      e.rotate()
+      e.move_away()
+    else:
+      e.move()</code></pre>
+</section><section id="process-4---visualisation-test" class="slide level2">
+<h1>Process 4 - <strong>visualisation test</strong></h1>
+<div class="code">
+<a href="../code/process4-6.py">code</a>
+</div>
+<pre class="python"><code>def draw():
+  ...
+  # find all elements touching another element
+  lines = []
+  for a, b in itertools.combinations(elements, 2):
+    ...
+    if distance &lt; 0.5 * (a.size + b.size):
+      ...
+      lines.append((a.x, a.y, b.x, b.y, distance))
+
+  if lines:
+    # draw lines between elements
+    for line in lines:
+      p.line(line[0], line[1], line[2], line[3])</code></pre>
+</section><section id="process-4---visualisation" class="slide level2">
+<h1>Process 4 - <strong>visualisation</strong></h1>
+<div class="code">
+<a href="../code/process4-7.py">code</a>
+</div>
+<pre class="python"><code>def draw():
+  ...
+  if lines:
+    # sort lines by length
+    lines.sort(key=lambda x: x[-1])
+
+    # map distance to colour
+    scale = 255.0 / len(lines)
+    colours = (scale * i for i in range(len(lines)))
+
+    # draw lines between elements
+    for colour, line in itertools.izip(colours, lines):
+      p.stroke(colour, 10)
+      p.line(line[0], line[1], line[2], line[3])
+
+...
+
+def mousePressed():
+  if p.frame.loop:
+    p.noLoop()
+  else:
+    p.loop()</code></pre>
+</section><section id="process-4---colours" class="slide level2">
+<h1>Process 4 - <strong>colours</strong></h1>
+<div class="code">
+<a href="../code/process4-8.py">code</a>
+</div>
+<pre class="python"><code>def setup():
+  ...
+  p.colorMode(p.HSB, 360, 100, 100)
+
+...
+
+def draw():
+  ...
+  if lines:
+    ...
+    # map distance to colour
+    scale = 360.0 / len(lines)
+    colours = (scale * i for i in range(len(lines)))
+
+    # draw lines between elements
+    for colour, line in itertools.izip(colours, lines):
+      p.stroke(colour, 100, 100, 10)
+      ...</code></pre>
+</section><section id="code-dojo" class="slide level2">
+<h1>Code dojo</h1>
+<ul>
+<li><strong>easy</strong> - process 10</li>
+<li><strong>medium</strong> - process 6 or 13</li>
+<li><strong>hard</strong> - process 11 or 14</li>
+</ul>
+<div class="side">
+<h3>
+<a href="http://reas.com/compendium_text/">&quot;Process compendium&quot;</a>
+</h3>
+by<br> Casey Reas
+</div>
+</section><section id="acknowledgments" class="slide level2">
+<h1>Acknowledgments</h1>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/File:AdditiveColor.svg">additive colour mixing</a> - Mike Horwath</li>
+<li><a href="https://commons.wikimedia.org/wiki/File:Blended_colour_wheel.svg">colour wheel</a> - Gringer</li>
+</ul>
+<div class="side"><h3>
+IMAGES
+</h3></div>
+
+<ul>
+<li><a href="https://www.khanacademy.org/computing/hour-of-code/hour-of-code-tutorial/">shapes</a> - Pamela Fox</li>
+<li><a href="http://ejohn.org/apps/processing.js/examples/basic/mouse2d.html">mouse</a>, <a href="https://processing.org/examples/recursion.html">recursion</a>, <a href="https://github.com/processing/processing-docs/blob/master/content/examples/Topics/Interaction/Follow3/Follow3.pde">follow</a> - Casey Reas &amp; Ben Fry</li>
+<li><a href="https://code.google.com/p/pyprocessing/wiki/BasicTutorial#Transforms">star</a> - pyprocessing Tutorial</li>
+<li><a href="http://www.learningprocessing.com/examples/chapter-13/example-13-7/">wave</a>, <a href="https://processing.org/examples/tree.html">tree</a> - Daniel Shiffman</li>
+<li><a href="http://www.openprocessing.org/sketch/156428">rings pattern</a>, <a href="http://www.openprocessing.org/sketch/156426">aniamted rings</a> - Diana Lange</li>
+</ul>
+<div class="side"><h3>
+CODE
+</h3><div>
+
+
+</section>
+
+<!-- {{{{ dzslides core
+#
+#
+#     __  __  __       .  __   ___  __
+#    |  \  / /__` |    | |  \ |__  /__`
+#    |__/ /_ .__/ |___ | |__/ |___ .__/ core :€
+#
+#
+# The following block of code is not supposed to be edited.
+# But if you want to change the behavior of these slides,
+# feel free to hack it!
+#
+-->
+
+<div id="progress-bar"></div>
+
+<!-- Default Style -->
+<style>
+  * { margin: 0; padding: 0; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+  [role="note"] { display: none; }
+  body {
+    width: 800px; height: 600px;
+    margin-left: -400px; margin-top: -300px;
+    position: absolute; top: 50%; left: 50%;
+    overflow: hidden;
+    display: none;
+  }
+  .view body {
+    position: static;
+    margin: 0; padding: 0;
+    width: 100%; height: 100%;
+    display: inline-block;
+    overflow: visible; overflow-x: hidden;
+    /* undo Dz.onresize */
+    transform: none !important;
+    -moz-transform: none !important;
+    -webkit-transform: none !important;
+    -o-transform: none !important;
+    -ms-transform: none !important;
+  }
+  .view head, .view head > title { display: block }
+  section {
+    position: absolute;
+    pointer-events: none;
+    width: 100%; height: 100%;
+  }
+  .view section {
+    pointer-events: auto;
+    position: static;
+    width: 800px; height: 600px;
+    margin: -150px -200px;
+    float: left;
+
+    transform: scale(.4);
+    -moz-transform: scale(.4);
+    -webkit-transform: scale(.4);
+    -o-transform: scale(.4);
+    -ms-transform: scale(.4);
+  }
+  .view section > * { pointer-events: none; }
+  section[aria-selected] { pointer-events: auto; }
+  html { overflow: hidden; }
+  html.view { overflow: visible; }
+  body.loaded { display: block; }
+  .incremental {visibility: hidden; }
+  .incremental[active] {visibility: visible; }
+  #progress-bar{
+    bottom: 0;
+    position: absolute;
+    -moz-transition: width 400ms linear 0s;
+    -webkit-transition: width 400ms linear 0s;
+    -ms-transition: width 400ms linear 0s;
+    transition: width 400ms linear 0s;
+  }
+  .view #progress-bar {
+    display: none;
+  }
+</style>
+
+<script>
+  var Dz = {
+    remoteWindows: [],
+    idx: -1,
+    step: 0,
+    html: null,
+    slides: null,
+    progressBar : null,
+    params: {
+      autoplay: "1"
+    }
+  };
+
+  Dz.init = function() {
+    document.body.className = "loaded";
+    this.slides = Array.prototype.slice.call(queryAll("body > section"));
+    this.progressBar = query("#progress-bar");
+    this.html = document.body.parentNode;
+    this.setupParams();
+    this.onhashchange();
+    this.setupTouchEvents();
+    this.onresize();
+    this.setupView();
+  }
+
+  Dz.setupParams = function() {
+    var p = window.location.search.substr(1).split('&');
+    p.forEach(function(e, i, a) {
+      var keyVal = e.split('=');
+      Dz.params[keyVal[0]] = decodeURIComponent(keyVal[1]);
+    });
+  // Specific params handling
+    if (!+this.params.autoplay)
+      queryAll.forEach(queryAll("video"), function(v){ v.controls = true });
+  }
+
+  Dz.onkeydown = function(aEvent) {
+    // Don't intercept keyboard shortcuts
+    if (aEvent.altKey
+      || aEvent.ctrlKey
+      || aEvent.metaKey
+      || aEvent.shiftKey) {
+      return;
+    }
+    if ( aEvent.keyCode == 37 // left arrow
+      || aEvent.keyCode == 38 // up arrow
+      || aEvent.keyCode == 33 // page up
+    ) {
+      aEvent.preventDefault();
+      this.back();
+    }
+    if ( aEvent.keyCode == 39 // right arrow
+      || aEvent.keyCode == 40 // down arrow
+      || aEvent.keyCode == 34 // page down
+    ) {
+      aEvent.preventDefault();
+      this.forward();
+    }
+    if (aEvent.keyCode == 35) { // end
+      aEvent.preventDefault();
+      this.goEnd();
+    }
+    if (aEvent.keyCode == 36) { // home
+      aEvent.preventDefault();
+      this.goStart();
+    }
+    if (aEvent.keyCode == 32) { // space
+      aEvent.preventDefault();
+      this.toggleContent();
+    }
+    if (aEvent.keyCode == 70) { // f
+      aEvent.preventDefault();
+      this.goFullscreen();
+    }
+    if (aEvent.keyCode == 79) { // o
+      aEvent.preventDefault();
+      this.toggleView();
+    }
+  }
+
+  /* Touch Events */
+
+  Dz.setupTouchEvents = function() {
+    var orgX, newX;
+    var tracking = false;
+
+    var db = document.body;
+    db.addEventListener("touchstart", start.bind(this), false);
+    db.addEventListener("touchmove", move.bind(this), false);
+
+    function start(aEvent) {
+      aEvent.preventDefault();
+      tracking = true;
+      orgX = aEvent.changedTouches[0].pageX;
+    }
+
+    function move(aEvent) {
+      if (!tracking) return;
+      newX = aEvent.changedTouches[0].pageX;
+      if (orgX - newX > 100) {
+        tracking = false;
+        this.forward();
+      } else {
+        if (orgX - newX < -100) {
+          tracking = false;
+          this.back();
+        }
+      }
+    }
+  }
+
+  Dz.setupView = function() {
+    document.body.addEventListener("click", function ( e ) {
+      if (!Dz.html.classList.contains("view")) return;
+      if (!e.target || e.target.nodeName != "SECTION") return;
+
+      Dz.html.classList.remove("view");
+      Dz.setCursor(Dz.slides.indexOf(e.target) + 1);
+    }, false);
+  }
+
+  /* Adapt the size of the slides to the window */
+
+  Dz.onresize = function() {
+    var db = document.body;
+    var sx = db.clientWidth / window.innerWidth;
+    var sy = db.clientHeight / window.innerHeight;
+    var transform = "scale(" + (1/Math.max(sx, sy)) + ")";
+
+    db.style.MozTransform = transform;
+    db.style.WebkitTransform = transform;
+    db.style.OTransform = transform;
+    db.style.msTransform = transform;
+    db.style.transform = transform;
+  }
+
+
+  Dz.getNotes = function(aIdx) {
+    var s = query("section:nth-of-type(" + aIdx + ")");
+    var d = s.query("[role='note']");
+    return d ? d.innerHTML : "";
+  }
+
+  Dz.onmessage = function(aEvent) {
+    var argv = aEvent.data.split(" "), argc = argv.length;
+    argv.forEach(function(e, i, a) { a[i] = decodeURIComponent(e) });
+    var win = aEvent.source;
+    if (argv[0] === "REGISTER" && argc === 1) {
+      this.remoteWindows.push(win);
+      this.postMsg(win, "REGISTERED", document.title, this.slides.length);
+      this.postMsg(win, "CURSOR", this.idx + "." + this.step);
+      return;
+    }
+    if (argv[0] === "BACK" && argc === 1)
+      this.back();
+    if (argv[0] === "FORWARD" && argc === 1)
+      this.forward();
+    if (argv[0] === "START" && argc === 1)
+      this.goStart();
+    if (argv[0] === "END" && argc === 1)
+      this.goEnd();
+    if (argv[0] === "TOGGLE_CONTENT" && argc === 1)
+      this.toggleContent();
+    if (argv[0] === "SET_CURSOR" && argc === 2)
+      window.location.hash = "#" + argv[1];
+    if (argv[0] === "GET_CURSOR" && argc === 1)
+      this.postMsg(win, "CURSOR", this.idx + "." + this.step);
+    if (argv[0] === "GET_NOTES" && argc === 1)
+      this.postMsg(win, "NOTES", this.getNotes(this.idx));
+  }
+
+  Dz.toggleContent = function() {
+    // If a Video is present in this new slide, play it.
+    // If a Video is present in the previous slide, stop it.
+    var s = query("section[aria-selected]");
+    if (s) {
+      var video = s.query("video");
+      if (video) {
+        if (video.ended || video.paused) {
+          video.play();
+        } else {
+          video.pause();
+        }
+      }
+    }
+  }
+
+  Dz.setCursor = function(aIdx, aStep) {
+    // If the user change the slide number in the URL bar, jump
+    // to this slide.
+    aStep = (aStep != 0 && typeof aStep !== "undefined") ? "." + aStep : ".0";
+    window.location.hash = "#" + aIdx + aStep;
+  }
+
+  Dz.onhashchange = function() {
+    var cursor = window.location.hash.split("#"),
+        newidx = 1,
+        newstep = 0;
+    if (cursor.length == 2) {
+      newidx = ~~cursor[1].split(".")[0];
+      newstep = ~~cursor[1].split(".")[1];
+      if (newstep > Dz.slides[newidx - 1].queryAll('.incremental > *').length) {
+        newstep = 0;
+        newidx++;
+      }
+    }
+    this.setProgress(newidx, newstep);
+    if (newidx != this.idx) {
+      this.setSlide(newidx);
+    }
+    if (newstep != this.step) {
+      this.setIncremental(newstep);
+    }
+    for (var i = 0; i < this.remoteWindows.length; i++) {
+      this.postMsg(this.remoteWindows[i], "CURSOR", this.idx + "." + this.step);
+    }
+  }
+
+  Dz.back = function() {
+    if (this.idx == 1 && this.step == 0) {
+      return;
+    }
+    if (this.step == 0) {
+      this.setCursor(this.idx - 1,
+                     this.slides[this.idx - 2].queryAll('.incremental > *').length);
+    } else {
+      this.setCursor(this.idx, this.step - 1);
+    }
+  }
+
+  Dz.forward = function() {
+    if (this.idx >= this.slides.length &&
+        this.step >= this.slides[this.idx - 1].queryAll('.incremental > *').length) {
+        return;
+    }
+    if (this.step >= this.slides[this.idx - 1].queryAll('.incremental > *').length) {
+      this.setCursor(this.idx + 1, 0);
+    } else {
+      this.setCursor(this.idx, this.step + 1);
+    }
+  }
+
+  Dz.goStart = function() {
+    this.setCursor(1, 0);
+  }
+
+  Dz.goEnd = function() {
+    var lastIdx = this.slides.length;
+    var lastStep = this.slides[lastIdx - 1].queryAll('.incremental > *').length;
+    this.setCursor(lastIdx, lastStep);
+  }
+
+  Dz.toggleView = function() {
+    this.html.classList.toggle("view");
+
+    if (this.html.classList.contains("view")) {
+      query("section[aria-selected]").scrollIntoView(true);
+    }
+  }
+
+  Dz.setSlide = function(aIdx) {
+    this.idx = aIdx;
+    var old = query("section[aria-selected]");
+    var next = query("section:nth-of-type("+ this.idx +")");
+    if (old) {
+      old.removeAttribute("aria-selected");
+      var video = old.query("video");
+      if (video) {
+        video.pause();
+      }
+    }
+    if (next) {
+      next.setAttribute("aria-selected", "true");
+      if (this.html.classList.contains("view")) {
+        next.scrollIntoView();
+      }
+      var video = next.query("video");
+      if (video && !!+this.params.autoplay) {
+        video.play();
+      }
+    } else {
+      // That should not happen
+      this.idx = -1;
+      // console.warn("Slide doesn't exist.");
+    }
+  }
+
+  Dz.setIncremental = function(aStep) {
+    this.step = aStep;
+    var old = this.slides[this.idx - 1].query('.incremental > *[aria-selected]');
+    if (old) {
+      old.removeAttribute('aria-selected');
+    }
+    var incrementals = queryAll('.incremental');
+    if (this.step <= 0) {
+      queryAll.forEach(incrementals, function(aNode) {
+        aNode.removeAttribute('active');
+      });
+      return;
+    }
+    var next = this.slides[this.idx - 1].queryAll('.incremental > *')[this.step - 1];
+    if (next) {
+      next.setAttribute('aria-selected', true);
+      next.parentNode.setAttribute('active', true);
+      var found = false;
+      queryAll.forEach(incrementals, function(aNode) {
+        if (aNode != next.parentNode)
+          if (found)
+            aNode.removeAttribute('active');
+          else
+            aNode.setAttribute('active', true);
+        else
+          found = true;
+      });
+    } else {
+      setCursor(this.idx, 0);
+    }
+    return next;
+  }
+
+  Dz.goFullscreen = function() {
+    var html = query('html'),
+        requestFullscreen = html.requestFullscreen || html.requestFullScreen || html.mozRequestFullScreen || html.webkitRequestFullScreen;
+    if (requestFullscreen) {
+      requestFullscreen.apply(html);
+    }
+  }
+
+  Dz.setProgress = function(aIdx, aStep) {
+    var slide = query("section:nth-of-type("+ aIdx +")");
+    if (!slide)
+      return;
+    var steps = slide.queryAll('.incremental > *').length + 1,
+        slideSize = 100 / (this.slides.length - 1),
+        stepSize = slideSize / steps;
+    this.progressBar.style.width = ((aIdx - 1) * slideSize + aStep * stepSize) + '%';
+  }
+
+  Dz.postMsg = function(aWin, aMsg) { // [arg0, [arg1...]]
+    aMsg = [aMsg];
+    for (var i = 2; i < arguments.length; i++)
+      aMsg.push(encodeURIComponent(arguments[i]));
+    aWin.postMessage(aMsg.join(" "), "*");
+  }
+
+  function init() {
+    Dz.init();
+    window.onkeydown = Dz.onkeydown.bind(Dz);
+    window.onresize = Dz.onresize.bind(Dz);
+    window.onhashchange = Dz.onhashchange.bind(Dz);
+    window.onmessage = Dz.onmessage.bind(Dz);
+  }
+
+  window.onload = init;
+</script>
+
+
+<script> // Helpers
+  if (!Function.prototype.bind) {
+    Function.prototype.bind = function (oThis) {
+
+      // closest thing possible to the ECMAScript 5 internal IsCallable
+      // function
+      if (typeof this !== "function")
+      throw new TypeError(
+        "Function.prototype.bind - what is trying to be fBound is not callable"
+      );
+
+      var aArgs = Array.prototype.slice.call(arguments, 1),
+          fToBind = this,
+          fNOP = function () {},
+          fBound = function () {
+            return fToBind.apply( this instanceof fNOP ? this : oThis || window,
+                   aArgs.concat(Array.prototype.slice.call(arguments)));
+          };
+
+      fNOP.prototype = this.prototype;
+      fBound.prototype = new fNOP();
+
+      return fBound;
+    };
+  }
+
+  var query = (HTMLElement.prototype.query = function(aQuery) {
+    return this.querySelector(aQuery);
+  }).bind(document);
+
+  var queryAll = (HTMLElement.prototype.queryAll = function(aQuery) {
+    return this.querySelectorAll(aQuery);
+  }).bind(document);
+
+  queryAll.forEach = function(nodeList, fun) {
+    Array.prototype.forEach.call(nodeList, fun);
+  }
+</script>

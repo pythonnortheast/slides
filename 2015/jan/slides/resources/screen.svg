@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" height="100%" viewBox="0 0 269.28287 271.74448" width="100%" version="1.1" y="0px" x="0px" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" enable-background="new 0 0 612 792"><g stroke="#999" stroke-width="1.3" fill="none" transform="translate(-52.1 -265)"><rect y="315" width="213" x="101" height="213"/><line y1="493" x2="314" x1="101" y2="493"/><line y1="457" x2="314" x1="101" y2="457"/><line y1="422" x2="314" x1="101" y2="422"/><line y1="386" x2="314" x1="101" y2="386"/><line y1="351" x2="314" x1="101" y2="351"/><line y1="315" x2="279" x1="279" y2="528"/><line y1="315" x2="243" x1="243" y2="528"/><line y1="315" x2="208" x1="208" y2="528"/><line y1="315" x2="172" x1="172" y2="528"/><line y1="315" x2="136" x1="136" y2="528"/></g><g font-family="Sans"><text font-size="17.2px" y="14.547979" x="147.6812" fill="#ffffff">X</text>
+<text font-size="17.2px" y="161.95193" x="2.0336175" fill="#ffffff">Y</text>
+<g font-size="12px" fill="#808080"><text y="44.380653" x="44.854156" line-height="125%">0</text>
+<text y="44.380653" x="80.13414" line-height="125%">1</text>
+<text y="44.380653" x="115.95204" line-height="125%">2</text>
+<text y="44.380653" x="151.19" line-height="125%">3</text>
+<text y="44.380653" x="186.65489" line-height="125%">4</text>
+<text y="44.380653" x="222.11557" line-height="125%">5</text>
+<text y="44.380653" x="257.40396" line-height="125%">6</text>
+</g></g><circle transform="translate(-87.1 -300)" cy="492" cx="243" r="5.5" fill="#fff"/><g font-size="12px" font-family="Sans" fill="#808080"><text y="56.024239" x="34.079262" line-height="125%">0</text>
+<text y="91.124367" x="34.079262" line-height="125%">1</text>
+<text y="126.32954" x="34.079262" line-height="125%">2</text>
+<text y="161.29938" x="34.079262" line-height="125%">3</text>
+<text y="196.39951" x="34.079262" line-height="125%">4</text>
+<text y="231.36938" x="34.079262" line-height="125%">5</text>
+<text y="266.57455" x="34.079262" line-height="125%">6</text>
+</g><line stroke-width="1.3" x1="19.1" y1="183" stroke="#fff" x2="19.1" y2="134" fill="#fff"/><line stroke-width="1.3" x1="181" y1="20" stroke="#fff" x2="131" y2="20" fill="#fff"/><text font-size="17.8px" y="216.0999" x="131.81966" font-family="Sans" line-height="125%" fill="#ffffff">(3, 4)</text>
+<path fill="#fff" d="m177 15.5 4.68 4.58-4.68 4.17z"/><path fill="#fff" d="m23.6 180-4.58 4.68-4.17-4.68z"/></svg>
