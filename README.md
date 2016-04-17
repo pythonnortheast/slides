@@ -1,32 +1,39 @@
 # Slides
 
-This repo contains the following slides from the meetups
+This repo contains the following slides from our meetups:
+
+### 2016
+
+* Paweł Widera - [tutorial][datahack] on data hacking (April)
+* Alex Kavanagh - talk on decorators (February)
+* Tom Merritt Smith - talk on Game of Life (January)
 
 ### 2015
 
-* [Paweł Widera's tutorial][evoalg] on evolutionary algorithms (October)
-* [Paweł Widera's talk][genart] on drawing with code and generative art (January)
+* Paweł Widera - [tutorial][evoalg] on evolutionary algorithms (October)
+* Paweł Widera - [talk][genart] on drawing with code and generative art (January)
 
 ### 2014
 
-* Marc Kirkwood's talk on Django and Javascript (May)
-* Alex Kavanagh's talk on Test Driven Development (April)
-* Rowan Hargreaves' tutorial on Robot Game (March)
-* Paweł Widera's tutorial on pygame (February)
-* Praveen Kumar's talk on gevent (January)
+* Marc Kirkwood - talk on Django and Javascript (May)
+* Alex Kavanagh - talk on Test Driven Development (April)
+* Rowan Hargreaves - tutorial on Robot Game (March)
+* Paweł Widera - tutorial on pygame (February)
+* Praveen Kumar - talk on gevent (January)
 
 ## 2013
 
-* [Dave Jeffrey's / The App Chap's][2] talk on The Coldest Journey Django project (May)
+* [Dave Jeffrey / The App Chap's][2] - talk on The Coldest Journey Django project (May)
 
 ## 2012
 
-* [Simon Oram's][0] talk on ZODB (September)
-* [Dave Jeffrey's][1] talk on Virtualenv & Virtualenvwrapper (September)
+* [Simon Oram][0] - talk on ZODB (September)
+* [Dave Jeffrey][1] - talk on Virtualenv & Virtualenvwrapper (September)
 
 
 [0]: http://www.electrosoup.co.uk/
 [1]: http://www.davidjeffrey.co.uk
 [2]: http://www.theappchaps.co.uk
-[genart]: http://tinyurl.com/pyne-genart
-[evoalg]: http://tinyurl.com/pyne-evoalg
+[genart]: http://homepages.cs.ncl.ac.uk/pawel.widera/pyne-processing/slides
+[evoalg]: http://homepages.cs.ncl.ac.uk/pawel.widera/pyne-evolution/slides
+[datahack]: http://homepages.cs.ncl.ac.uk/pawel.widera/pyne-data-hacking/slides
