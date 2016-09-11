@@ -4,6 +4,7 @@ This repo contains the following slides from our meetups:
 
 ### 2016
 
+* Paweł Widera - [talk][microbit] on BBC micro:bit (August)
 * Paweł Widera - [tutorial][datahack] on data hacking (April)
 * Alex Kavanagh - talk on decorators (February)
 * Tom Merritt Smith - talk on Game of Life (January)
@@ -32,8 +33,9 @@ This repo contains the following slides from our meetups:
 
 
 [0]: http://www.electrosoup.co.uk/
-[1]: http://www.davidjeffrey.co.uk
-[2]: http://www.theappchaps.co.uk
-[genart]: http://homepages.cs.ncl.ac.uk/pawel.widera/pyne-processing/slides
-[evoalg]: http://homepages.cs.ncl.ac.uk/pawel.widera/pyne-evolution/slides
-[datahack]: http://homepages.cs.ncl.ac.uk/pawel.widera/pyne-data-hacking/slides
+[1]: http://www.davidjeffrey.co.uk/
+[2]: http://www.theappchaps.co.uk/
+[genart]: http://homepages.cs.ncl.ac.uk/pawel.widera/pyne-processing/slides/
+[evoalg]: http://homepages.cs.ncl.ac.uk/pawel.widera/pyne-evolution/slides/
+[datahack]: http://homepages.cs.ncl.ac.uk/pawel.widera/pyne-data-hacking/slides/
+[microbit]: http://homepages.cs.ncl.ac.uk/pawel.widera/pyne-micro:bit/slides/
