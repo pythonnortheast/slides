@@ -2,6 +2,10 @@
 
 This repo contains the following slides from our meetups:
 
+### 2018
+
+* Paweł Widera - [tutorial][ai] on AI in games (May)
+
 ### 2016
 
 * Paweł Widera - [talk][microbit] on BBC micro:bit (August)
@@ -39,3 +43,4 @@ This repo contains the following slides from our meetups:
 [evoalg]: http://homepages.cs.ncl.ac.uk/pawel.widera/pyne-evolution/slides/
 [datahack]: http://homepages.cs.ncl.ac.uk/pawel.widera/pyne-data-hacking/slides/
 [microbit]: http://homepages.cs.ncl.ac.uk/pawel.widera/pyne-micro:bit/slides/
+[ai]: http://homepages.cs.ncl.ac.uk/pawel.widera/pyne-ai-games/slides/
